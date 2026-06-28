@@ -11,39 +11,44 @@
     <style>
         body {
             font-family: 'Prompt', sans-serif;
-            background: linear-gradient(135deg, #FFD1E6 0%, #BFE9FF 100%);
+            background: linear-gradient(135deg, #FFB6B9 0%, #BBDED6 100%);
             min-height: 100vh;
         }
         
         @keyframes float-up-down { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-15px) rotate(10deg); } }
-        @keyframes dash { to { stroke-dashoffset: -20; } }
+        @keyframes float-left-right { 0%, 100% { transform: translateX(0px) rotate(0deg); } 50% { transform: translateX(15px) rotate(-10deg); } }
+        @keyframes pulse-soft { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
         
-        .animate-dash { stroke-dasharray: 8; animation: dash 1s linear infinite; }
-        .anim-float { animation: float-up-down 4s ease-in-out infinite; }
+        .anim-float-1 { animation: float-up-down 4s ease-in-out infinite; }
+        .anim-float-2 { animation: float-up-down 5s ease-in-out infinite 1.5s; }
+        .anim-float-3 { animation: float-left-right 6s ease-in-out infinite; }
+        .anim-pulse { animation: pulse-soft 3s ease-in-out infinite; }
 
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(16px);
             border: 2px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 20px 50px -10px rgba(255, 182, 193, 0.4);
+            box-shadow: 0 20px 50px -10px rgba(138, 198, 209, 0.4);
         }
 
-        .virtual-card { 
-            position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            cursor: pointer; 
-            border: 2px solid transparent;
+        .virtual-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .virtual-card:hover { transform: translateY(-4px); }
+        
+        /* กรอบไข่ปลา */
+        .dashed-border {
+            border: 3px dashed #8AC6D1;
         }
-        .virtual-card:hover { transform: translateY(-4px); border-color: rgba(255, 255, 255, 0.5); }
     </style>
 </head>
 <body class="flex flex-col items-center py-6 px-4 text-gray-700 relative overflow-x-hidden">
 
     <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <svg class="absolute top-[5%] left-[10%] w-8 h-8 text-pink-400 anim-float" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        <svg class="absolute top-[5%] left-[10%] w-8 h-8 text-[#FFB6B9] anim-float-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        <svg class="absolute top-[15%] left-[2%] w-6 h-6 text-[#8AC6D1] anim-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        <svg class="absolute top-[10%] right-[8%] w-10 h-10 text-[#FFB6B9] anim-float-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
     </div>
 
-    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-pink-500/90 backdrop-blur-sm text-white px-6 py-3 rounded-full shadow-xl transition-all duration-300 opacity-0 translate-y-4 pointer-events-none z-50 font-medium text-sm">
+    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#8AC6D1]/90 backdrop-blur-sm text-white px-6 py-3 rounded-full shadow-xl transition-all duration-300 opacity-0 translate-y-4 pointer-events-none z-50 font-medium text-sm">
         คัดลอกเลขบัญชีแล้ว
     </div>
 
@@ -53,47 +58,44 @@
             <p class="text-sm font-medium text-gray-500 mt-1">Payment & Checkout</p>
         </div>
 
-        <div class="glass-card rounded-[40px] p-4">
-            <!-- ลูกเล่นกรอบไข่ปลา -->
-            <div class="relative p-2">
-                <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400" preserveAspectRatio="none">
-                    <rect x="2" y="2" width="396" height="396" rx="30" fill="none" stroke="#FFB7C5" stroke-width="4" class="animate-dash" />
-                </svg>
-                <div class="rounded-[28px] overflow-hidden border-[4px] border-white">
-                    <img src="https://lh3.googleusercontent.com/d/1rMb9wgnqa0z3-Lyb6myvRJ-BE-B3nev7" alt="QR Code" class="w-full h-auto">
-                </div>
+        <div class="glass-card rounded-[40px] p-3">
+            <div class="rounded-[28px] overflow-hidden border-[4px] dashed-border bg-[#FAE3D9] p-1 shadow-sm">
+                <img src="https://lh3.googleusercontent.com/d/1rMb9wgnqa0z3-Lyb6myvRJ-BE-B3nev7" alt="QR Code" class="w-full h-auto object-cover rounded-[22px]">
             </div>
 
             <div class="p-4 pt-6 space-y-5">
                 <div class="text-center">
                     <p class="text-[15px] font-medium text-gray-700">
-                        ชื่อบัญชี <span class="text-pink-600 font-bold bg-pink-50 px-2 py-0.5 rounded-lg border border-pink-100">นางสาวณัฐกฤตา สุขใจ</span>
+                        ชื่อบัญชี <span class="text-[#FFB6B9] font-bold bg-white px-2 py-0.5 rounded-lg border border-[#FFB6B9]">นางสาวณัฐกฤตา สุขใจ</span>
                     </p>
                 </div>
 
                 <div class="space-y-4">
-                    <div class="virtual-card bg-gradient-to-r from-blue-400 to-blue-500 rounded-[24px] p-5 shadow-lg text-white" onclick="copyText('5451004540')">
-                        <div class="flex justify-between mb-2"><span class="font-bold">กสิกรไทย</span><span class="text-xs bg-white/20 px-2 py-1 rounded-full">คัดลอก</span></div>
+                    <div class="virtual-card bg-gradient-to-br from-[#8AC6D1] to-[#BBDED6] rounded-[24px] p-5 shadow-lg text-white" onclick="copyText('5451004540')">
+                        <div class="flex justify-between mb-2"><span class="font-bold">กสิกรไทย</span><span class="text-xs bg-white/20 px-2 py-1 rounded-full">คลิกเพื่อคัดลอก</span></div>
                         <div class="text-2xl font-bold tracking-widest">545-1-00454-0</div>
                     </div>
 
-                    <div class="virtual-card bg-gradient-to-r from-blue-400 to-blue-600 rounded-[24px] p-5 shadow-lg text-white" onclick="copyText('6637935824')">
-                        <div class="flex justify-between mb-2"><span class="font-bold">กรุงไทย</span><span class="text-xs bg-white/20 px-2 py-1 rounded-full">คัดลอก</span></div>
+                    <div class="virtual-card bg-gradient-to-br from-[#8AC6D1] to-[#BBDED6] rounded-[24px] p-5 shadow-lg text-white" onclick="copyText('6637935824')">
+                        <div class="flex justify-between mb-2"><span class="font-bold">กรุงไทย</span><span class="text-xs bg-white/20 px-2 py-1 rounded-full">คลิกเพื่อคัดลอก</span></div>
                         <div class="text-2xl font-bold tracking-widest">663-7-93582-4</div>
                     </div>
 
-                    <div class="virtual-card bg-gradient-to-r from-pink-400 to-pink-500 rounded-[24px] p-5 shadow-lg text-white" onclick="copyText('0953351519')">
-                        <div class="flex justify-between mb-2"><span class="font-bold">TrueMoney Wallet</span><span class="text-xs bg-white/20 px-2 py-1 rounded-full">คัดลอก</span></div>
+                    <div class="virtual-card bg-gradient-to-br from-[#FFB6B9] to-[#FAE3D9] rounded-[24px] p-5 shadow-lg text-white" onclick="copyText('0953351519')">
+                        <div class="flex justify-between mb-2"><span class="font-bold">TrueMoney Wallet</span><span class="text-xs bg-white/20 px-2 py-1 rounded-full">คลิกเพื่อคัดลอก</span></div>
                         <div class="text-2xl font-bold tracking-widest">095-335-1519</div>
                     </div>
 
-                    <a href="https://lin.ee/w82pHL0" class="virtual-card flex flex-col items-center justify-center bg-white border-2 border-pink-200 rounded-[24px] p-5 shadow-md text-pink-600 font-bold text-center">
+                    <a href="https://lin.ee/w82pHL0" class="virtual-card flex flex-col items-center justify-center bg-white border-2 border-[#FFB6B9] rounded-[24px] p-5 shadow-md text-[#FFB6B9] font-bold text-center">
                         <span class="text-lg">สอบถาม / สั่งซื้อสินค้า</span>
+                        <span class="text-xs text-gray-500 mt-1">คลิกเพื่อไปที่ LINE</span>
                     </a>
 
-                    <div class="bg-pink-50 border border-pink-100 rounded-2xl p-4 text-[13px] text-gray-700 text-center">
-                        <p>โอนแล้วแจ้งสลิปด้วยนะคะ | สอบถามก่อนโอนทุกครั้งงับ</p>
+                    <div class="bg-[#FAE3D9] border border-[#FFB6B9] rounded-2xl p-4 text-[13px] text-gray-700 space-y-2">
+                        <p>โอนแล้วแจ้งสลิปด้วยนะคะ</p>
+                        <p>สอบถามก่อนโอนทุกครั้งงับ</p>
                     </div>
+
                 </div>
             </div>
         </div>
